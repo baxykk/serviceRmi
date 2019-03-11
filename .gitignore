@@ -1,0 +1,10 @@
+
+#ignore bin
+/bin/
+# ignore old tests
+/src/test/java/ua/univer/
+# except jdbc connection test
+!/src/test/java/ua/univer/rmi/
+# ignore all files in the build/ directory
+build/
+

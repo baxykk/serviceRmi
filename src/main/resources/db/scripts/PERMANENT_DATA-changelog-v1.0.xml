@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+
+    <changeSet author="andrey" id="initialData" runOnChange="true">  
+
+    <insert tableName="user_roles">
+        <column name="id" value="1"/>
+        <column name="role" value="user"/>
+    </insert>
+    
+    <insert tableName="user_roles">
+        <column name="id" value="2"/>
+        <column name="role" value="administrator"/>
+    </insert>
+
+    <insert tableName="users">
+        <column name="name" value="Vasyl"/>
+        <column name="surname" value="Daemon"/>
+        <column name="username" value="Admin"/>
+        <column name="passw" value="admin"/>
+        <column name="email" value="admin@admin.ua"/>
+        <column name="role_id" value="2"></column>
+    </insert>
+
+    <insert tableName="pool_account">
+        <column name="account_number" value="125679001"/>
+        <column name="bank_number" value="34500"/>
+    </insert>
+
+    </changeSet>
+
+</databaseChangeLog>

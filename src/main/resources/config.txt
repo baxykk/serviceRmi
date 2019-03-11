@@ -1,0 +1,14 @@
+Rmi:
+
+Address = 127.0.0.1
+Port = 1109
+
+JDBC:
+
+DriverClass = com.mysql.cj.jdbc.Driver
+Database = mysql
+FullAddress = 127.0.0.1:3306
+DBName = rmi
+OptionalParameters = useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false
+Login = Admin
+Passw = admin
