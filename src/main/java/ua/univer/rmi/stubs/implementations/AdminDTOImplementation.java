@@ -2,6 +2,7 @@ package ua.univer.rmi.stubs.implementations;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Collections;
 import java.util.List;
 
 import ua.univer.rmi.converters.DaoToDtoConverter;
@@ -53,5 +54,5 @@ public class AdminDTOImplementation extends UnicastRemoteObject implements Admin
 		cardDao.blockCard(card.getCardNumber(), card.isBlocked());
 		return true;
 	}
-
+	
 }

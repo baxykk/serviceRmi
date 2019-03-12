@@ -3,14 +3,14 @@ package ua.univer.rmi.model.entity;
 public class PoolAccount {
 	private int poolId;
 	private int accountNumber;
-	private String bankNumber;
+	private int bankNumber;
 	private double balance;
 	
 	public PoolAccount() {
-		this(0, 0, "", 0);
+		this(0, 0, 0, 0);
 	}
 	
-	public PoolAccount(int poolId, int accountNumber, String bankNumber, double balance) {
+	public PoolAccount(int poolId, int accountNumber, int bankNumber, double balance) {
 		this.poolId = poolId;
 		this.accountNumber = accountNumber;
 		this.bankNumber = bankNumber;
@@ -29,11 +29,11 @@ public class PoolAccount {
 		this.accountNumber = accountNumber;
 	}
 
-	public String getBankNumber() {
+	public int getBankNumber() {
 		return bankNumber;
 	}
 
-	public void setBankNumber(String bankNumber) {
+	public void setBankNumber(int bankNumber) {
 		this.bankNumber = bankNumber;
 	}
 

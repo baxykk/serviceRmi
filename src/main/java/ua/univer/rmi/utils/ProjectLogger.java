@@ -20,5 +20,9 @@ public class ProjectLogger{
 	
 	public void info(String s) {
 		logger.info(s);
-	}	
+	}
+	
+	public void warn(String s) {
+		logger.warn(s);
+	}
 }

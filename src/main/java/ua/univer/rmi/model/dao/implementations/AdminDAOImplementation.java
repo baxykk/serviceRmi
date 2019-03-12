@@ -8,111 +8,54 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import ua.univer.rmi.exceptions.FailedSqlTransactionException;
 import ua.univer.rmi.model.DAOFactory;
 import ua.univer.rmi.model.dao.AccountDAO;
 import ua.univer.rmi.model.dao.AdminDAO;
 import ua.univer.rmi.model.entity.Account;
 import ua.univer.rmi.model.entity.Administrator;
-import ua.univer.rmi.model.entity.Card;
-import ua.univer.rmi.model.entity.Client;
 import ua.univer.rmi.utils.ConnectionPool;
+import ua.univer.rmi.utils.ProjectLogger;
 
 public class AdminDAOImplementation implements AdminDAO {
 
 	@Override
-	public synchronized List<Administrator> getUser(String external_id) {
+	public List<Administrator> getUser(String username) {
 		List<Administrator> admin = new ArrayList<>();
 		List<Account> accounts = new ArrayList<>();
 		ResultSet rs = null;
 
-		String selectedUserData = "SELECT * FROM users WHERE external_key = ?;";
+		String selectedUserData = "SELECT username, name, surname, role_id FROM users WHERE username = ?;";
 
 		AccountDAO accDao = DAOFactory.getAccountDAO();
 		accounts = accDao.getAllAccounts();
 		try (Connection c = ConnectionPool.getConnection(); PreparedStatement ps = c.prepareStatement(selectedUserData)) {
-			ps.setString(1, external_id);
+			ps.setString(1, username);
 			ps.execute();
 			rs = ps.getResultSet();
-			admin = getClientDataFromUsers(rs);
+			admin = getAdminDataFromUsers(rs);
 			admin.get(0).setAccounts(accounts);
 		} catch (SQLException e) {			
-				throw new RuntimeException(e);		
+			ProjectLogger.getInstance().error(e.toString());
+			throw new FailedSqlTransactionException(e.toString());
 		} finally {
 			try {
 				if (rs != null)
 					rs.close();
 			} catch (SQLException e) {
-				//
+				ProjectLogger.getInstance().warn(e.toString());
 			}
 		}
 		return admin;
 	}
 
-	private List<Administrator> getClientDataFromUsers(ResultSet rs) throws SQLException {
-		List<Administrator> admList = new ArrayList<>();		
-		if (rs.isBeforeFirst()) {
-			
-			while (rs.next()) {		
-				Administrator admin = new Administrator();
-				admin.setId(rs.getInt(1));
-				admin.setUsername(rs.getString(2));
-				admin.setName(rs.getString(3));
-				admin.setSurname(rs.getString(4));
-				admin.setRoleID(rs.getInt(5));			
-				admList.add(admin);
-			}
-		} else
-			admList = Collections.EMPTY_LIST;
-		return admList;
-	}
-
-	@Override
-	public List<Client> getAllClients() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void addClient(Client client) {
-
-		String clientToInsert = "INSERT INTO users (external_key, name, surname, role_id)" + " VALUES(?, ?, ?, ?);";
-
-		try (Connection c = ConnectionPool.getConnection(); PreparedStatement ps = c.prepareStatement(clientToInsert)) {
-			ps.setString(1, client.getUsername());
-			ps.setString(2, client.getName());
-			ps.setString(3, client.getSurname());
-			ps.setInt(4, client.getRoleID());
-			ps.execute();
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
-	public void updateClient(Client client) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void deleteClient(String external_key) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void deleteAllClients() {
-		// TODO Auto-generated method stub
-
-	}
-
 	@Override
 	public String getUserRole(String username, String passw) {
 		String role = "";
-		String userAuthentification = "SELECT role FROM role WHERE id_role = (SELECT role_id FROM users WHERE external_key = ? AND passw = ?) ;";
+		String userAuthentication = "SELECT role FROM user_roles WHERE id = (SELECT role_id FROM users WHERE username = ? AND passw = ?);";
 		ResultSet rs = null;
 		
-		try (Connection c = ConnectionPool.getConnection(); PreparedStatement ps = c.prepareStatement(userAuthentification)) {
+		try (Connection c = ConnectionPool.getConnection(); PreparedStatement ps = c.prepareStatement(userAuthentication)) {
 			ps.setString(1, username);
 			ps.setString(2, passw);
 			ps.execute();
@@ -122,17 +65,35 @@ public class AdminDAOImplementation implements AdminDAO {
 				role = rs.getString(1);
 			}
 		} catch (SQLException e) {
-			throw new RuntimeException(e);
+			ProjectLogger.getInstance().error(e.toString());
+			throw new FailedSqlTransactionException(e.toString());
 		} finally {
 			if (rs!=null)
 				try {
 					rs.close();
-				} catch (SQLException e) {	// clean up 
-				}
-				
+				} catch (SQLException e) {	
+					ProjectLogger.getInstance().warn(e.toString());
+				}				
 			}
 	
 		return role;
 	}
 
+	private List<Administrator> getAdminDataFromUsers(ResultSet rs) throws SQLException {
+		List<Administrator> admList = new ArrayList<>();		
+		if (rs.isBeforeFirst()) {
+			
+			while (rs.next()) {		
+				Administrator admin = new Administrator();
+				admin.setUsername(rs.getString(1));
+				admin.setName(rs.getString(2));
+				admin.setSurname(rs.getString(3));
+				admin.setRoleID(rs.getInt(4));			
+				admList.add(admin);
+			}
+		} 
+		else
+			admList = Collections.emptyList();
+		return admList;
+	}
 }

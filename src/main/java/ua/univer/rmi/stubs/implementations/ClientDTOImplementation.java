@@ -93,7 +93,7 @@ public class ClientDTOImplementation extends UnicastRemoteObject implements Clie
 		
 		boolean success = false;
 		PoolAccountDAO pad = DAOFactory.getPoolAccountDAO();
-		PoolAccount pool = pad.getPoolAcc();		
+		PoolAccount pool = pad.getPoolAccount();		
 		BankDetailsDTO poolDetails = DaoToDtoConverter.convert(pool);
 		
 		TransferExecutor paymentApi = MockPaymentsApi.getApi();
@@ -121,7 +121,7 @@ public class ClientDTOImplementation extends UnicastRemoteObject implements Clie
 	public synchronized boolean transferMoney(DetailsDTO payeeDetails, double amount, String reference) throws RemoteException {
 		boolean success = false;
 		PoolAccountDAO pad = DAOFactory.getPoolAccountDAO();
-		PoolAccount pool = pad.getPoolAcc();
+		PoolAccount pool = pad.getPoolAccount();
 		
 		String accountNumAsString = reference.substring(5,15);
 		int accountNum = Integer.parseInt(accountNumAsString);		
@@ -160,7 +160,7 @@ public class ClientDTOImplementation extends UnicastRemoteObject implements Clie
 	public synchronized boolean addMoneyToAccount(DetailsDTO payerCard, double amount, String reference) throws RemoteException {
 		boolean success = false;
 		PoolAccountDAO pad = DAOFactory.getPoolAccountDAO();
-		PoolAccount pool = pad.getPoolAcc();		
+		PoolAccount pool = pad.getPoolAccount();		
 		BankDetailsDTO poolDetails = DaoToDtoConverter.convert(pool);
 		
 		String accountNumAsString = reference.substring(5,15);

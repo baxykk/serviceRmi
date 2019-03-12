@@ -8,16 +8,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import ua.univer.rmi.exceptions.FailedSqlTransactionException;
 import ua.univer.rmi.model.dao.CardDAO;
 import ua.univer.rmi.model.entity.Card;
 import ua.univer.rmi.model.entity.Client;
 import ua.univer.rmi.utils.ConnectionPool;
+import ua.univer.rmi.utils.ProjectLogger;
 
 public class CardDAOImplementation implements CardDAO {
 
 	@Override
 	public void addNewCard(Card card) {
-		String cardToInsert = "INSERT INTO cards(external_key, user_id, till_month, till_year) VALUES(?, ?, ?, ?);";
+		String cardToInsert = "INSERT INTO cards(card_number, user_id, month, year) VALUES(?, ?, ?, ?);";
 
 		try (Connection c = ConnectionPool.getConnection(); PreparedStatement ps = c.prepareStatement(cardToInsert);) {
 			ps.setLong(1, card.getCardNumber());
@@ -27,14 +29,15 @@ public class CardDAOImplementation implements CardDAO {
 			ps.execute();
 
 		} catch (SQLException e) {
-			throw new RuntimeException(e);
+			ProjectLogger.getInstance().error(e.toString());
+			throw new FailedSqlTransactionException(e.toString());
 		}
 	}
 	
 	@Override
 	public List<Card> getClientCards(Client client) {
 		List<Card> cards = new ArrayList<>();
-		String cardsToSelect = "SELECT * FROM  cards WHERE user_id = " + client.getId() + ";";
+		String cardsToSelect = "SELECT card_number, month, year, status, user_id FROM  cards WHERE user_id = " + client.getId() + ";";
 
 		try (Connection c = ConnectionPool.getConnection(); PreparedStatement ps = c.prepareStatement(cardsToSelect)) {
 			ps.execute();
@@ -42,41 +45,45 @@ public class CardDAOImplementation implements CardDAO {
 			cards = getCardsData(rs);
 			rs.close();
 		} catch (SQLException e) {
-			throw new RuntimeException(e);
+			ProjectLogger.getInstance().error(e.toString());
+			throw new FailedSqlTransactionException(e.toString());
 		}
 		return cards;
-	}
+	}		
 
-	private List<Card> getCardsData(ResultSet rs) throws SQLException {
+	
+
+	@Override
+	public List<Card> getBlockedCards() {
 		List<Card> cards = new ArrayList<>();
-		if (rs.isBeforeFirst()) {
-			while (rs.next()) {
-				Card card = new Card();
-				card.setId(rs.getInt(1));
-				card.setCardNumber(rs.getLong(2));
-				card.setUserId(rs.getInt(3));
-				card.setValidTillMonth(rs.getInt(4));
-				card.setValidTillYear(rs.getInt(5));
-				card.setBlockedStatus(rs.getBoolean(6));
-				cards.add(card);
-			}
-		} else
-			cards = Collections.EMPTY_LIST;
+		String cardsToSelect = "SELECT card_number, month, year, status, user_id FROM  cards WHERE status = true;";
+
+		try (Connection c = ConnectionPool.getConnection(); PreparedStatement ps = c.prepareStatement(cardsToSelect)) {
+			ps.execute();
+			ResultSet rs = ps.getResultSet();
+			cards = getCardsData(rs);
+			rs.close();
+		} catch (SQLException e) {
+			ProjectLogger.getInstance().error(e.toString());
+			throw new FailedSqlTransactionException(e.toString());
+		}
 		return cards;
 	}
 
 	@Override
 	public boolean updateCardValidity(Card card) {
-		String cardToUpdate = "UPDATE cards SET till_month = ?, till_year = ? WHERE external_key = ?";
+		String cardToUpdate = "UPDATE cards SET month = ?, year = ? WHERE card_number = ?";
 		boolean success = false;
 		
 		try (Connection c = ConnectionPool.getConnection(); PreparedStatement ps = c.prepareStatement(cardToUpdate)) {
 			ps.setInt(1, card.getValidTillMonth());
 			ps.setInt(2, card.getValidTillYear());
+			ps.setLong(3, card.getCardNumber());
 			ps.execute();
 			success = true;
 		} catch (SQLException e) {
-			throw new RuntimeException(e);
+			ProjectLogger.getInstance().error(e.toString());
+			throw new FailedSqlTransactionException(e.toString());
 		}
 		
 		return success;
@@ -84,7 +91,7 @@ public class CardDAOImplementation implements CardDAO {
 
 	@Override
 	public boolean deleteCard(Card card) {
-		String accountToDelete = "DELETE FROM cards WHERE external_key = ?";
+		String accountToDelete = "DELETE FROM cards WHERE card_number = ?";
 		boolean success = false;
 		
 		try (Connection c = ConnectionPool.getConnection(); PreparedStatement ps = c.prepareStatement(accountToDelete)) {
@@ -92,15 +99,16 @@ public class CardDAOImplementation implements CardDAO {
 			ps.execute();
 			success = true;
 		} catch (SQLException e) {
-			throw new RuntimeException(e);
+			ProjectLogger.getInstance().error(e.toString());
+			throw new FailedSqlTransactionException(e.toString());
 		}
 		
 		return success;
 	}
-
+	
 	@Override
 	public boolean blockCard(long cardNumber, boolean bool) {
-		String cardToBlock = "UPDATE cards SET status_blocked = ? WHERE external_key = ?";
+		String cardToBlock = "UPDATE cards SET status = ? WHERE card_number = ?";
 		boolean success = false;
 		
 		try (Connection c = ConnectionPool.getConnection(); PreparedStatement ps = c.prepareStatement(cardToBlock)) {
@@ -109,28 +117,30 @@ public class CardDAOImplementation implements CardDAO {
 			ps.execute();
 			success = true;
 		} catch (SQLException e) {
-			throw new RuntimeException(e);
+			ProjectLogger.getInstance().error(e.toString());
+			throw new FailedSqlTransactionException(e.toString());
 		}
 		
 		return success;
-	}
-
-	@Override
-	public List<Card> getBlockedCards() {
+	}	
+	
+	private List<Card> getCardsData(ResultSet rs) throws SQLException {
 		List<Card> cards = new ArrayList<>();
-		String cardsToSelect = "SELECT * FROM  cards WHERE status_blocked = true;";
-
-		try (Connection c = ConnectionPool.getConnection(); PreparedStatement ps = c.prepareStatement(cardsToSelect)) {
-			ps.execute();
-			ResultSet rs = ps.getResultSet();
-			cards = getCardsData(rs);
-			rs.close();
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
+		if (rs.isBeforeFirst()) {
+			while (rs.next()) {
+				Card card = new Card();
+				card.setCardNumber(rs.getLong(1));
+				card.setValidTillMonth(rs.getInt(2));
+				card.setValidTillYear(rs.getInt(3));
+				card.setBlockedStatus(rs.getBoolean(4));
+				card.setUserId(rs.getInt(5));
+				cards.add(card);
+			}
+		} 
+		else
+			cards = Collections.emptyList();
+		
 		return cards;
 	}
-
-	
 
 }

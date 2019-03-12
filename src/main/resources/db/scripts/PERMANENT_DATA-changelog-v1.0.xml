@@ -21,7 +21,7 @@
         <column name="name" value="Vasyl"/>
         <column name="surname" value="Daemon"/>
         <column name="username" value="Admin"/>
-        <column name="passw" value="admin"/>
+        <column name="passw" value="admin123"/>
         <column name="email" value="admin@admin.ua"/>
         <column name="role_id" value="2"></column>
     </insert>

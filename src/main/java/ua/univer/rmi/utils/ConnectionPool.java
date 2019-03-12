@@ -23,7 +23,6 @@ public class ConnectionPool {
 	private static final BasicDataSource ds = new BasicDataSource();
 	
 	static {
-		logger.info(DB_URL);
 		ds.setDriverClassName(DRIVER_CLASS_NAME);
 		ds.setUrl(DB_URL);
 		ds.setUsername(USER);
