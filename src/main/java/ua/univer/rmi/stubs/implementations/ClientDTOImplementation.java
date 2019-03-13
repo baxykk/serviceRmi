@@ -111,7 +111,7 @@ public class ClientDTOImplementation extends UnicastRemoteObject implements Clie
 			double currentPoolBalance = pool.getBalance();
 			double updatedPoolBalance = currentPoolBalance + amount;
 			pad.updateBalance(updatedPoolBalance);
-			updatedPoolBalance = currentPoolBalance - amount;
+			updatedPoolBalance = updatedPoolBalance - amount;
 			pad.updateBalance(updatedPoolBalance);
 		}
 		return success;
