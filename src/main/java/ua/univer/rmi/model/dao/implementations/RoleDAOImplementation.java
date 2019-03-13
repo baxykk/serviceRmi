@@ -30,14 +30,14 @@ public class RoleDAOImplementation implements RoleDAO {
 			roleToGet.setUserRole(rs.getString(2));
 			rs.close();
 		} catch (SQLException e) {
-			ProjectLogger.getInstance().error(e.toString());
+			ProjectLogger.getInstance().error(e);
 			throw new FailedSqlTransactionException(e.toString());
 		} finally {
 			if (rs != null)
 				try {
 					rs.close();
 				} catch (SQLException e) {
-					ProjectLogger.getInstance().warn(e.toString());
+					ProjectLogger.getInstance().warn(e);
 				}
 		}
 		

@@ -36,14 +36,14 @@ public class AdminDAOImplementation implements AdminDAO {
 			admin = getAdminDataFromUsers(rs);
 			admin.get(0).setAccounts(accounts);
 		} catch (SQLException e) {			
-			ProjectLogger.getInstance().error(e.toString());
+			ProjectLogger.getInstance().error(e);
 			throw new FailedSqlTransactionException(e.toString());
 		} finally {
 			try {
 				if (rs != null)
 					rs.close();
 			} catch (SQLException e) {
-				ProjectLogger.getInstance().warn(e.toString());
+				ProjectLogger.getInstance().warn(e);
 			}
 		}
 		return admin;
@@ -65,14 +65,14 @@ public class AdminDAOImplementation implements AdminDAO {
 				role = rs.getString(1);
 			}
 		} catch (SQLException e) {
-			ProjectLogger.getInstance().error(e.toString());
+			ProjectLogger.getInstance().error(e);
 			throw new FailedSqlTransactionException(e.toString());
 		} finally {
 			if (rs!=null)
 				try {
 					rs.close();
 				} catch (SQLException e) {	
-					ProjectLogger.getInstance().warn(e.toString());
+					ProjectLogger.getInstance().warn(e);
 				}				
 			}
 	

@@ -29,7 +29,7 @@ public class CardDAOImplementation implements CardDAO {
 			ps.execute();
 
 		} catch (SQLException e) {
-			ProjectLogger.getInstance().error(e.toString());
+			ProjectLogger.getInstance().error(e);
 			throw new FailedSqlTransactionException(e.toString());
 		}
 	}
@@ -45,7 +45,7 @@ public class CardDAOImplementation implements CardDAO {
 			cards = getCardsData(rs);
 			rs.close();
 		} catch (SQLException e) {
-			ProjectLogger.getInstance().error(e.toString());
+			ProjectLogger.getInstance().error(e);
 			throw new FailedSqlTransactionException(e.toString());
 		}
 		return cards;
@@ -64,7 +64,7 @@ public class CardDAOImplementation implements CardDAO {
 			cards = getCardsData(rs);
 			rs.close();
 		} catch (SQLException e) {
-			ProjectLogger.getInstance().error(e.toString());
+			ProjectLogger.getInstance().error(e);
 			throw new FailedSqlTransactionException(e.toString());
 		}
 		return cards;
@@ -82,7 +82,7 @@ public class CardDAOImplementation implements CardDAO {
 			ps.execute();
 			success = true;
 		} catch (SQLException e) {
-			ProjectLogger.getInstance().error(e.toString());
+			ProjectLogger.getInstance().error(e);
 			throw new FailedSqlTransactionException(e.toString());
 		}
 		
@@ -99,7 +99,7 @@ public class CardDAOImplementation implements CardDAO {
 			ps.execute();
 			success = true;
 		} catch (SQLException e) {
-			ProjectLogger.getInstance().error(e.toString());
+			ProjectLogger.getInstance().error(e);
 			throw new FailedSqlTransactionException(e.toString());
 		}
 		
@@ -117,7 +117,7 @@ public class CardDAOImplementation implements CardDAO {
 			ps.execute();
 			success = true;
 		} catch (SQLException e) {
-			ProjectLogger.getInstance().error(e.toString());
+			ProjectLogger.getInstance().error(e);
 			throw new FailedSqlTransactionException(e.toString());
 		}
 		

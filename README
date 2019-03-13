@@ -1,6 +1,6 @@
 Installation instructions
 
-1. Create Schema in MySQL
+1. Create database in MySQL
 2. Create user
 3. Update settings in src/main/resources/config.txt
 4. Run gradle customBuild

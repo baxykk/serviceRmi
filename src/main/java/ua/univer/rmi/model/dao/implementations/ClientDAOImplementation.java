@@ -38,7 +38,7 @@ public class ClientDAOImplementation implements ClientDAO {
 			throw new UsernameAlreadyExistsException();
 		}
 		catch (SQLException e) {
-			ProjectLogger.getInstance().error(e.toString());
+			ProjectLogger.getInstance().error(e);
 			throw new FailedSqlTransactionException(e.toString());
 		} 
 		
@@ -60,14 +60,14 @@ public class ClientDAOImplementation implements ClientDAO {
 				role = rs.getString(1);
 			}
 		} catch (SQLException e) {
-			ProjectLogger.getInstance().error(e.toString());
+			ProjectLogger.getInstance().error(e);
 			throw new FailedSqlTransactionException(e.toString());
 		} finally {
 			if (rs!=null)
 				try {
 					rs.close();
 				} catch (SQLException e) {	
-					ProjectLogger.getInstance().warn(e.toString());
+					ProjectLogger.getInstance().warn(e);
 				}			
 			}
 		
@@ -106,8 +106,9 @@ public class ClientDAOImplementation implements ClientDAO {
 		} catch (SQLException e) {
 			try {
 				c.rollback();
+				ProjectLogger.getInstance().warn(e);
 			} catch (SQLException e1) {
-				ProjectLogger.getInstance().error(e1.toString());
+				ProjectLogger.getInstance().error(e1);
 				throw new FailedSqlTransactionException(e1.toString());
 			}
 			ProjectLogger.getInstance().error(e.toString());
@@ -117,7 +118,7 @@ public class ClientDAOImplementation implements ClientDAO {
 				if (ps != null)	ps.close();
 				if (c != null)	c.close();
 			} catch (SQLException e) {
-				ProjectLogger.getInstance().warn(e.toString());
+				ProjectLogger.getInstance().warn(e);
 			}
 		}
 		return client;
@@ -136,12 +137,12 @@ public class ClientDAOImplementation implements ClientDAO {
 			rs = ps.getResultSet();
 			client = getClientDataFromUsers(rs);
 		} catch (SQLException e) {
-			ProjectLogger.getInstance().error(e.toString());
+			ProjectLogger.getInstance().error(e);
 			throw new FailedSqlTransactionException(e.toString());
 		} finally {
 			if (rs!=null)
 				try { rs.close(); } catch (SQLException e) {
-					ProjectLogger.getInstance().warn(e.toString());
+					ProjectLogger.getInstance().warn(e);
 				}
 		}
 		

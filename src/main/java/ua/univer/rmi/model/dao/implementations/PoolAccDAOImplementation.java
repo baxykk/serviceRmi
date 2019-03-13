@@ -28,14 +28,14 @@ public class PoolAccDAOImplementation implements PoolAccountDAO {
 			coreAccount.setBalance(rs.getDouble(4));
 			rs.close();
 		} catch (SQLException e) {
-			ProjectLogger.getInstance().error(e.toString());
+			ProjectLogger.getInstance().error(e);
 			throw new FailedSqlTransactionException();
 		} finally {
 			if (rs != null)
 				try {
 					rs.close();
 				} catch (SQLException e) {
-					ProjectLogger.getInstance().warn(e.toString());
+					ProjectLogger.getInstance().warn(e);
 				}
 		}
 
@@ -55,14 +55,14 @@ public class PoolAccDAOImplementation implements PoolAccountDAO {
 			currentBalance = rs.getDouble(1);
 			rs.close();
 		} catch (SQLException e) {
-			ProjectLogger.getInstance().error(e.toString());
+			ProjectLogger.getInstance().error(e);
 			throw new FailedSqlTransactionException();
 		} finally {
 			if (rs != null)
 				try {
 					rs.close();
 				} catch (SQLException e) {
-					ProjectLogger.getInstance().warn(e.toString());
+					ProjectLogger.getInstance().warn(e);
 				}
 		}
 
@@ -77,7 +77,7 @@ public class PoolAccDAOImplementation implements PoolAccountDAO {
 			ps.setDouble(1, amount);
 			ps.execute();
 		} catch (SQLException e) {
-			ProjectLogger.getInstance().error(e.toString());
+			ProjectLogger.getInstance().error(e);
 			throw new FailedSqlTransactionException();
 		}
 

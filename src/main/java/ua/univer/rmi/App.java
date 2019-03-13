@@ -6,6 +6,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Properties;
 
+import org.apache.logging.log4j.Level;
+
 import ua.univer.rmi.configuration.Configuration;
 import ua.univer.rmi.stubs.AdminDTOInterface;
 import ua.univer.rmi.stubs.ClientDTOInterface;
@@ -30,7 +32,7 @@ public class App {
 		logger.info("Config loaded");
 	}
 	
-	public static void main(String[] args) throws RemoteException, MalformedURLException {
+	public static void main(String[] args) throws RemoteException {
 		
 		System.setProperty("java.rmi.server.hostname", HOSTNAME);
 		

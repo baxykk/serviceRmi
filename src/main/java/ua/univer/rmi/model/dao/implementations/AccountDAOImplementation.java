@@ -30,7 +30,7 @@ public class AccountDAOImplementation implements AccountDAO {
 			ps.execute();
 			
 		} catch (SQLException e) {
-			ProjectLogger.getInstance().error(e.toString());
+			ProjectLogger.getInstance().error(e);
 			throw new FailedSqlTransactionException(e.toString());
 		}
 		
@@ -49,11 +49,11 @@ public class AccountDAOImplementation implements AccountDAO {
 			rs = ps.getResultSet();
 			account = getAccountData(rs);
 		} catch (SQLException e) {
-			ProjectLogger.getInstance().error(e.toString());
+			ProjectLogger.getInstance().error(e);
 			throw new FailedSqlTransactionException(e.toString());
 		} finally {
 			if (rs != null)
-				try { rs.close();} catch (SQLException e) {ProjectLogger.getInstance().warn(e.toString());	}
+				try { rs.close();} catch (SQLException e) {ProjectLogger.getInstance().warn(e);	}
 		}
 		
 		return account;
@@ -70,12 +70,12 @@ public class AccountDAOImplementation implements AccountDAO {
 			rs = ps.getResultSet();
 			accounts = getAccountData(rs);
 		} catch (SQLException e) {
-			ProjectLogger.getInstance().error(e.toString());
+			ProjectLogger.getInstance().error(e);
 			throw new FailedSqlTransactionException(e.toString());
 		} finally {
 			if (rs != null)
 				try { rs.close();} catch (SQLException e) {
-					ProjectLogger.getInstance().warn(e.toString());
+					ProjectLogger.getInstance().warn(e);
 				}
 		}
 
@@ -92,7 +92,7 @@ public class AccountDAOImplementation implements AccountDAO {
 			ps.setInt(2, account.getAccountNumber());
 			ps.execute();
 		} catch (SQLException e) {
-			ProjectLogger.getInstance().error(e.toString());
+			ProjectLogger.getInstance().error(e);
 			throw new FailedSqlTransactionException(e.toString());
 		}
 		
@@ -110,7 +110,7 @@ public class AccountDAOImplementation implements AccountDAO {
 			ps.execute();
 			success = true;
 		} catch (SQLException e) {
-			ProjectLogger.getInstance().error(e.toString());
+			ProjectLogger.getInstance().error(e);
 			throw new FailedSqlTransactionException(e.toString());
 		}
 		
@@ -131,14 +131,14 @@ public class AccountDAOImplementation implements AccountDAO {
 			balance = rs.getDouble(1);
 			rs.close();
 		} catch (SQLException e) {
-			ProjectLogger.getInstance().error(e.toString());
+			ProjectLogger.getInstance().error(e);
 			throw new FailedSqlTransactionException(e.toString());
 		} finally {
 			if (rs != null)
 				try {
 					rs.close();
 				} catch (SQLException e) {
-					ProjectLogger.getInstance().warn(e.toString());
+					ProjectLogger.getInstance().warn(e);
 				}
 		}
 		return balance;

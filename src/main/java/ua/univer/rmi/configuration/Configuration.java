@@ -6,6 +6,7 @@ import java.util.Properties;
 
 import ua.univer.rmi.App;
 import ua.univer.rmi.exceptions.ConfigurationNotFoundException;
+import ua.univer.rmi.utils.ProjectLogger;
 
 public class Configuration extends Properties {
 
@@ -20,6 +21,7 @@ public class Configuration extends Properties {
 			try {
 				INSTANCE.load(input);
 			} catch (IOException e) {
+				ProjectLogger.getInstance().error(e);
 				throw new ConfigurationNotFoundException();
 			}
 	}
