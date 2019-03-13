@@ -13,8 +13,14 @@ repositories {
         }
     }
 
+targetCompatibility = 1.8
 sourceCompatibility = 1.8
 mainClassName = 'ua.univer.rmi.App'
+
+configurations {
+    // configuration that holds jars to include in the jar
+    extraLibs
+}
 
 
 dependencies {
@@ -25,10 +31,19 @@ dependencies {
     implementation 'mysql:mysql-connector-java:8.0.14'
     implementation 'org.liquibase:liquibase-core:3.5.5'
     
+    //fat jar libs
+    extraLibs 'org.apache.logging.log4j:log4j-api:2.11.1'
+    extraLibs 'org.apache.logging.log4j:log4j-core:2.11.1'
+    extraLibs 'org.apache.commons:commons-dbcp2:2.5.0'
+    extraLibs 'mysql:mysql-connector-java:8.0.14'
+    extraLibs 'org.liquibase:liquibase-core:3.5.5'
+    
     //liquibase dependencies
     liquibaseRuntime 'org.liquibase:liquibase-core:3.5.5'
     liquibaseRuntime 'mysql:mysql-connector-java:8.0.14'
     liquibaseRuntime 'org.liquibase:liquibase-groovy-dsl:2.0.1'
+    
+    configurations.compile.extendsFrom(configurations.extraLibs)
 }
 
 //load properties
@@ -66,6 +81,20 @@ task customBuild {
     tasks.findByName('build').mustRunAfter 'update'
 }
 
+
+
+
+
+jar {
+    from {
+            configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }
+        } 
+  manifest {
+    attributes(     
+      'Main-Class': 'ua.univer.rmi.App'
+      )
+  }
+}
 
 test {
     testLogging {
